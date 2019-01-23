@@ -40,18 +40,6 @@ def calculate_gain(all_set,left_set,right_set):
     return calculate_h(all_set) - remainder
 
 
-
-
-def count_number_of_labels(set):
-
-
-    labels_present = []
-
-    for i in set:
-        labels_present.append(i[7])
-
-    return len(set(labels_present))
-
 #splits the data set
 def find_split(training_set):
 
@@ -66,10 +54,6 @@ def find_split(training_set):
         set = training_set[training_set[:,attribute].argsort()]
 
         previous_label = set[0][7]
-
-
-
-
 
         for i in set:
 
@@ -95,15 +79,11 @@ def find_split(training_set):
 
             previous_label = i[7]
 
-
-
-
-
     return (best_split["attribute"],best_split["value"])
 
 #builds the tree of nodes
 def decision_tree_learning(training_set, depth):
-    print depth
+    #initalises node
     this_node = {
         "attribute": "",
         "value": "",
@@ -112,6 +92,7 @@ def decision_tree_learning(training_set, depth):
         "leaf" : 0
     }
 
+    #checks if its a leaf
     x = all_same_label(training_set)
     if x > 0:
         this_node["leaf"] = x
@@ -147,4 +128,9 @@ def decision_tree_learning(training_set, depth):
 set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 
 
-print decision_tree_learning(set, 0)
+tree = decision_tree_learning(set, 0)
+
+print tree
+
+                                [0] < -40
+                            [3]< -36    [4]<-20
