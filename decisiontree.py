@@ -10,7 +10,8 @@ def all_same_label(set):
     for i in set:
         if i[7] != first_label:
             return 0
-    return 1
+
+    return first_label
 
 
 
@@ -110,11 +111,10 @@ def decision_tree_learning(training_set, depth):
         "right": "",
         "leaf" : 0
     }
-    if depth > 2:
-        return (this_node,depth)
 
-    if all_same_label(set):
-        this_node["leaf"] = 1
+    x = all_same_label(training_set)
+    if x > 0:
+        this_node["leaf"] = x
         return (this_node,depth)
     else:
         (attribute, value) = find_split(training_set)
