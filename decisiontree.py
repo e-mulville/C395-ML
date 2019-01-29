@@ -13,8 +13,6 @@ def all_same_label(set):
 
     return first_label
 
-
-
 #information gain for a split
 def calculate_gain(all_set,left_set,right_set):
 
@@ -123,14 +121,9 @@ def decision_tree_learning(training_set, depth):
 
 
 
-
-
 set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 
 
 tree = decision_tree_learning(set, 0)
 
 print tree
-
-                                [0] < -40
-                            [3]< -36    [4]<-20
