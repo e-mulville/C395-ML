@@ -115,7 +115,7 @@ def decision_tree_learning(training_set, depth):
         right_set = np.array(right_set)
 
         (this_node["left"],left_depth) = decision_tree_learning(left_set, depth+1)
-        (this_node["right"],right_depth) = decision_tree_learning(right_set,depth+1)
+        (this_node["right"],right_depth) = decision_tree_learning(right_set, depth+1)
 
         return (this_node,max(left_depth, right_depth))
 
@@ -126,4 +126,4 @@ set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 
 tree = decision_tree_learning(set, 0)
 
-print tree
+print tree[0]

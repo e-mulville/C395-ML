@@ -3,14 +3,14 @@ import math
 import time
 import decisiontree import *
 
-def pruning(tree, validation_set):
+def prune(tree, validation_set):
 
     def recursive_prune(tree_root, current_node, best_performance):
 
         left_node = current_node["left"]
         right_node = current_node["right"]
 
-        #recurse through tree
+        #recurse through tree TODO
         if left_node["leaf"] == 0:
             recursive_prune(tree_root, left_node,best_performance)
         if right_node["leaf"] == 0:
@@ -18,6 +18,8 @@ def pruning(tree, validation_set):
 
         #if both children are leaves
         if (left_node["leaf"] != 0) && (right_node["leaf"] != 0):
+            current_node["left"] = ""
+            current_node["right"] = ""
 
             #try setting the current node to classify as the left
             current_node["leaf"] = left_node["leaf"]

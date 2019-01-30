@@ -37,8 +37,11 @@ def crossValidate(data_set):
 #########################################################
 
 def train_and_prune(validation_set, training_set):
-    None
-    #build tree from training_set
+    tree = getTree(training_set)
+
+    pruned_tree = prune(tree[0], validation_set)
+
+    return pruned_tree
 
     #prune it by comparing to validation_set
 
@@ -74,18 +77,18 @@ def test(tree, test_set):
         # check whether it matches the label and update confusion matrix accordingly
         trueLabel = int(test_val[7])
         CM[trueLabel-1][classPredicted-1] += 1
-    
+
     # TODO
     # # From CM calculate other metrics
     # for metricID in range (1,5):
     #     metricTemp = np.zeros(NUM_CLASSES)
     #     # 1 - Recall
-        
+
     #     # 2 - Precision
     #     # 3 - F score
     #     # 4 - Classification
     # Return the metrics
-    
+
     print(CM)
 
 
