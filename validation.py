@@ -11,18 +11,14 @@ NUM_CLASSES = 4
 
 def crossValidate(data_set):
 
+    #80 because size gives total data points not no. of rows
     split_size = data_set.size/80
-
-    print (split_size)
 
     #split out the testing data
     for i in range(0,10):
 
         split_set = np.split(data_set,[i*split_size, (i+1)*split_size])
         test_set = split_set[1]
-        print(split_set[0].size)
-        print(split_set[1].size)
-        print(split_set[2].size)
         set_without_test = np.concatenate((split_set[0],split_set[2]),axis = 0)
 
         #split out the validation
