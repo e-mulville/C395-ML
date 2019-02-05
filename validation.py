@@ -11,25 +11,30 @@ NUM_CLASSES = 4
 
 def crossValidate(data_set):
 
-    split_size = data_set.size()/10;
+    split_size = data_set.size/80
+
+    print (split_size)
 
     #split out the testing data
     for i in range(0,10):
 
         split_set = np.split(data_set,[i*split_size, (i+1)*split_size])
         test_set = split_set[1]
-        training_set = np.concatenate(split_set[0],split_set[1])
+        print(split_set[0].size)
+        print(split_set[1].size)
+        print(split_set[2].size)
+        set_without_test = np.concatenate((split_set[0],split_set[2]),axis = 0)
 
         #split out the validation
         for j in range(0,9):
 
-            split_training_set = np.split(training_set,[j*split_size, (j+1)*split_size])
-            validation_set = split_set[1]
-            training_set = np.concatinate(split_set[0],split_set[1])
+            split_training_set = np.split(set_without_test,[j*split_size, (j+1)*split_size])
+            validation_set = split_training_set[1]
+            training_set = np.concatenate((split_training_set[0],split_training_set[2]), axis = 0)
 
-            produced_tree  = train_and_prune(validation_set, training_set)
-
-            test_results[i][j] = test(produced_tree, test_set)
+            # produced_tree  = train_and_prune(validation_set, training_set)
+            #
+            # test_results[i][j] = test(produced_tree, test_set)
 
 
     #average the test reults
@@ -89,7 +94,7 @@ def test(tree, test_set):
         tp = CM[room][room]
         fn = 0
         for x in range(NUM_CLASSES):
-            if (x != room): 
+            if (x != room):
                 fn += CM[room][x]
             recallTemp = tp / (tp + fn)
         recallSum += recallTemp
@@ -100,7 +105,7 @@ def test(tree, test_set):
         tp = CM[room][room]
         fp = 0
         for x in range(NUM_CLASSES):
-            if (x != room): 
+            if (x != room):
                 fp += CM[x][room]
         precisionTemp = tp / (tp + fp)
         precisionSum += precisionTemp
@@ -115,23 +120,24 @@ def test(tree, test_set):
         for x in range(NUM_CLASSES):
             totalData += CM[room][x]
     classificationRate = correctClass / totalData
-    
+
     # Return the metrics
     return (CM, recall, precision, Fscore, classificationRate)
 
+set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 
-print("Reading datafiles...")
-dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
-print("Producing tree...")
-tree = getTree(dataSet, 0)[0]
-print("Testing tree...")
-# select TESTSET
-testSet = dataSet
-metrics = test(tree, testSet)
-print("Confusion matrix")
-print(metrics[0])
-print("Recall\t", metrics[1])
-print("Precision\t", metrics[2])
-print("F Score\t", metrics[3])
-print("Accuracy\t", metrics[4])
-
+crossValidate(set)
+# print("Reading datafiles...")
+# dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+# print("Producing tree...")
+# tree = getTree(dataSet, 0)[0]
+# print("Testing tree...")
+# # select TESTSET
+# testSet = dataSet
+# metrics = test(tree, testSet)
+# print("Confusion matrix")
+# print(metrics[0])
+# print("Recall\t", metrics[1])
+# print("Precision\t", metrics[2])
+# print("F Score\t", metrics[3])
+# print("Accuracy\t", metrics[4])

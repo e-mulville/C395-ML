@@ -121,9 +121,9 @@ def decision_tree_learning(training_set, depth):
 
 
 
-set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
-
-
-tree = decision_tree_learning(set, 0)
-
-print tree[0]
+# set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+#
+#
+# tree = decision_tree_learning(set, 0)
+#
+# print tree[0]
