@@ -27,6 +27,8 @@ def crossValidate(data_set):
             validation_set = split_training_set[1]
             training_set = np.concatenate((split_training_set[0],split_training_set[2]), axis = 0)
 
+            decisiontree = getTree(training_set,0)[0]
+            print (evaluate(test_set,decisiontree))
             # produced_tree  = train_and_prune(validation_set, training_set)
             #
             # test_results[i][j] = evaluate(test_set, produced_tree)
