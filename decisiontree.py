@@ -80,7 +80,7 @@ def find_split(training_set):
     return (best_split["attribute"],best_split["value"])
 
 #builds the tree of nodes
-def decision_tree_learning(training_set, depth):
+def build_decision_tree(training_set, depth):
     #initalises node
     this_node = {
         "attribute": "",
@@ -114,8 +114,8 @@ def decision_tree_learning(training_set, depth):
         left_set =  np.array(left_set)
         right_set = np.array(right_set)
 
-        (this_node["left"],left_depth) = decision_tree_learning(left_set, depth+1)
-        (this_node["right"],right_depth) = decision_tree_learning(right_set, depth+1)
+        (this_node["left"],left_depth) = build_decision_tree(left_set, depth+1)
+        (this_node["right"],right_depth) = build_decision_tree(right_set, depth+1)
 
         return (this_node,max(left_depth, right_depth))
 
@@ -124,6 +124,6 @@ def decision_tree_learning(training_set, depth):
 # set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 #
 #
-# tree = decision_tree_learning(set, 0)
+# tree = build_decision_tree(set, 0)
 #
 # print tree[0]

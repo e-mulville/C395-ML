@@ -2,52 +2,11 @@
 import numpy as np
 import math
 import time
-from decisiontree import decision_tree_learning as getTree
-# from pruning import prune
+from decisiontree import build_decision_tree as getTree
+from pruning import prune
 
 # Define constants
 NUM_CLASSES = 4
-
-
-def crossValidate(data_set):
-    #80 because size gives total data points not no. of rows
-    split_size = int(data_set.size/80)
-
-    #split out the testing data
-    for i in range(0,10):
-
-        split_set = np.split(data_set,[i*split_size, (i+1)*split_size])
-        test_set = split_set[1]
-        set_without_test = np.concatenate((split_set[0],split_set[2]),axis = 0)
-
-        #split out the validation
-        for j in range(0,9):
-
-            split_training_set = np.split(set_without_test,[j*split_size, (j+1)*split_size])
-            validation_set = split_training_set[1]
-            training_set = np.concatenate((split_training_set[0],split_training_set[2]), axis = 0)
-
-            decisiontree = getTree(training_set,0)[0]
-            print (evaluate(test_set,decisiontree))
-            # produced_tree  = train_and_prune(validation_set, training_set)
-            #
-            # test_results[i][j] = evaluate(test_set, produced_tree)
-
-
-    #average the test reults
-
-
-#########################################################
-def train_and_prune(validation_set, training_set):
-    tree = getTree(training_set, 0)
-
-    pruned_tree = prune(tree[0], validation_set)
-
-    return pruned_tree
-
-    #prune it by comparing to validation_set
-
-    #return tree for testing
 
 #########################################################
 # Given a tree and a single measurement (7 values)
@@ -137,6 +96,8 @@ def print_metrics(metrics):
 
 
 set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+print(set)
+np.random.shuffle(set)
 crossValidate(set)
 # print("Reading datafiles...")
 # dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
