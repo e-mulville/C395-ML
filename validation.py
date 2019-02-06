@@ -2,15 +2,14 @@
 import numpy as np
 import math
 import time
-#from pruning import *
 from decisiontree import decision_tree_learning as getTree
+# from pruning import prune
 
 # Define constants
 NUM_CLASSES = 4
 
 
 def crossValidate(data_set):
-
     #80 because size gives total data points not no. of rows
     split_size = data_set.size/80
 
@@ -30,16 +29,15 @@ def crossValidate(data_set):
 
             # produced_tree  = train_and_prune(validation_set, training_set)
             #
-            # test_results[i][j] = test(produced_tree, test_set)
+            # test_results[i][j] = evaluate(test_set, produced_tree)
 
 
     #average the test reults
 
 
 #########################################################
-
 def train_and_prune(validation_set, training_set):
-    tree = getTree(training_set)
+    tree = getTree(training_set, 0)
 
     pruned_tree = prune(tree[0], validation_set)
 
@@ -69,7 +67,7 @@ def predict(tree, value):
 #########################################################
 # Tests tree based on test set and return 5-tuple
 # (Confusion Matrix | Recall | Precision | F score | Classification rate)
-def test(tree, test_set):
+def evaluate(test_set, tree):
     # Initialize Confusion Matrix and other metrics variables
     CM = np.zeros((NUM_CLASSES, NUM_CLASSES))
     recall = 0
@@ -130,7 +128,7 @@ crossValidate(set)
 # print("Testing tree...")
 # # select TESTSET
 # testSet = dataSet
-# metrics = test(tree, testSet)
+# metrics = evaluate(testSet, tree)
 # print("Confusion matrix")
 # print(metrics[0])
 # print("Recall\t", metrics[1])
