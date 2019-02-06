@@ -34,10 +34,15 @@ def crossValidate(data_set):
 def train_and_prune(validation_set, training_set):
     tree = getTree(training_set, 0)[0]
 
-    pruned_tree = prune(tree[0], validation_set)
+    pruned_tree = prune(tree, validation_set)
 
     return pruned_tree
 
     #prune it by comparing to validation_set
 
     #return tree for testing
+
+set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+print(set)
+np.random.shuffle(set)
+crossValidate(set)

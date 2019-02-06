@@ -1,9 +1,7 @@
 # Import libraries
 import numpy as np
 import math
-import time
-from decisiontree import build_decision_tree as getTree
-from pruning import prune
+
 
 # Define constants
 NUM_CLASSES = 4
@@ -95,10 +93,7 @@ def print_metrics(metrics):
 
 
 
-set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
-print(set)
-np.random.shuffle(set)
-crossValidate(set)
+
 # print("Reading datafiles...")
 # dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 # print("Producing tree...")
