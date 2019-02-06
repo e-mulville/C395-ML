@@ -11,7 +11,7 @@ NUM_CLASSES = 4
 
 def crossValidate(data_set):
     #80 because size gives total data points not no. of rows
-    split_size = data_set.size/80
+    split_size = int(data_set.size/80)
 
     #split out the testing data
     for i in range(0,10):
@@ -118,8 +118,23 @@ def evaluate(test_set, tree):
     # Return the metrics
     return (CM, recall, precision, Fscore, classificationRate)
 
-set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 
+# Function that takes the metrics 5-tuple and prints it in a nice format
+# (Confusion Matrix | Recall | Precision | F score | Classification rate)
+def print_metrics(metrics):
+    print("\tConfusion Matrix: ")
+    print(metrics[0])
+    print("\tRecall:              ", metrics[1])
+    print("\tPrecision:           ", metrics[2])
+    print("\tF Score:             ", metrics[3])
+    print("\tClassification Rate: ", metrics[4])
+
+
+
+
+
+
+set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 crossValidate(set)
 # print("Reading datafiles...")
 # dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
