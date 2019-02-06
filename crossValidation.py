@@ -42,7 +42,7 @@ def train_and_prune(validation_set, training_set):
 
     #return tree for testing
 
-set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
-print(set)
-np.random.shuffle(set)
-crossValidate(set)
+# set = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+# print(set)
+# np.random.shuffle(set)
+# crossValidate(set)
