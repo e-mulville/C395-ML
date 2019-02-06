@@ -39,9 +39,9 @@ def prune(tree, validation_set):
             current_node["leaf"] = right_node["leaf"]
             taking_right_performance = get_evaluation_metric(validation_set, tree_root)
 
-            if (taking_left_performance > no_change_performance) & (taking_left_performance >= taking_right_performance):
+            if (taking_left_performance >= no_change_performance) & (taking_left_performance >= taking_right_performance):
                 current_node["leaf"] = left_node["leaf"]
-            elif (taking_right_performance >= taking_left_performance) & (taking_right_performance > no_change_performance):
+            elif (taking_right_performance >= taking_left_performance) & (taking_right_performance >= no_change_performance):
                 current_node["leaf"] = right_node["leaf"]
             else:
                 current_node["leaf"] = 0
@@ -51,7 +51,5 @@ def prune(tree, validation_set):
 
     #test against validation_set
 
-
     recursive_prune(tree, tree)
-
     return tree
