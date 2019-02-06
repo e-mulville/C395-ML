@@ -13,7 +13,7 @@ cleanSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
 np.random.shuffle(cleanSet)
 print("\tReading noisy dataset...")
 noisySet = np.loadtxt("co395-cbc-dt/wifi_db/noisy_dataset.txt")
-print("\r \tReading noisy dataset... DONE")
+
 # STEP 2 - CREATING DECISION TREES
 print("\n----- 2 - CREATING DECISION TREES -----")
 print("\tCreating tree from clean dataset...")
