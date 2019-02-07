@@ -1,7 +1,8 @@
 import numpy as np
-from decisiontree import decision_tree_learning
+from decisiontree import build_decision_tree
 # from pruning import *
-from validation import evaluate, crossValidate, print_metrics
+from validation import evaluate, print_metrics
+from crossValidation import crossValidate
 
 
 
@@ -15,16 +16,16 @@ print("\tReading noisy dataset...")
 noisySet = np.loadtxt("co395-cbc-dt/wifi_db/noisy_dataset.txt")
 print("\tSplitting data into training and test sets...")
 cleanTest = cleanSet[:200]
-cleanSet = cleanSet[200:]
+cleanTreeSet = cleanSet[200:]
 noisyTest = noisySet[:200]
-noisySet = noisySet[200:]
+noisyTreeSet = noisySet[200:]
 
 # STEP 2 - CREATING DECISION TREES
 print("\n------- 2 - CREATING DECISION TREES -------")
 print("\tCreating tree from clean dataset...")
-cleanTree = decision_tree_learning(cleanSet, 0)
+cleanTree = build_decision_tree(cleanTreeSet, 0)[0]
 print("\tCreating tree from noisy dataset...")
-noisyTree = decision_tree_learning(noisySet, 0)
+noisyTree = build_decision_tree(noisyTreeSet, 0)[0]
     # TODO - function to visualize the tree
 
 # STEP 3 - EVALUATION
@@ -48,4 +49,3 @@ print("\tPruning  and evaluating cleanTree...")
 crossValidate(cleanSet)
 print("\tPruning  and evaluating noisyTree...")
 crossValidate(noisySet)
-
