@@ -91,20 +91,36 @@ def print_metrics(metrics):
 
 
 
+# This function was given to the students for a CW in CO316 Computer Vision to display the confusion matrix.
+def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
+    """
+        This function prints and plots the confusion matrix.
+        
+        cm: confusion matrix, default to be np.int32 data type
+        classes: a list of the class labels or class names
+        normalize: normalize the matrix so that each row amounts to one
+        cmap: color map
+    """
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        print("Normalized confusion matrix")
+    else:
+        print('Confusion matrix, without normalization')
+    print(cm)
 
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(classes))
+    plt.xticks(tick_marks, classes, rotation=45)
+    plt.yticks(tick_marks, classes)
 
-
-# print("Reading datafiles...")
-# dataSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
-# print("Producing tree...")
-# tree = getTree(dataSet, 0)[0]
-# print("Testing tree...")
-# # select TESTSET
-# testSet = dataSet
-# metrics = evaluate(testSet, tree)
-# print("Confusion matrix")
-# print(metrics[0])
-# print("Recall\t", metrics[1])
-# print("Precision\t", metrics[2])
-# print("F Score\t", metrics[3])
-# print("Accuracy\t", metrics[4])
+    fmt = '.2f' if normalize else '.0f'
+    thresh = cm.max() / 2.
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt),
+                 horizontalalignment="center",
+                 color="white" if cm[i, j] > thresh else "black")
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+    plt.tight_layout()
