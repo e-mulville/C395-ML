@@ -32,7 +32,7 @@ def crossValidate(data_set):
             pruned_tree = prune(tree, validation_set)
             test_results_after[i][j] = evaluate(test_set, pruned_tree)[4]
             percent = (float(i*9)+float(j+1))/0.9
-            print percent, "%"
+            print (percent, "%")
 
     print (np.average(test_results))
     print (np.average(test_results_after))
