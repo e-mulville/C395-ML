@@ -28,7 +28,7 @@ def calculate_gain(all_set,left_set,right_set):
 
         h = 0
 
-        for i in range(0,4):
+        for i in range(4):
             #pk * log2pk
             if (label_count[i] != 0) & (len(set) != 0):
                 h -= (label_count[i]/len(set))*math.log(label_count[i]/len(set),2)
@@ -92,6 +92,12 @@ def build_decision_tree(training_set, depth):
         "leaf" : 0
     }
 
+    if(depth > 50):
+        if(training_set.size == 0):
+            this_node["leaf"] =  1
+            return (this_node, depth+1)
+        this_node["leaf"] =  training_set[0][7]
+        return (this_node, depth+1)
     #checks if its a leaf
     x = all_same_label(training_set)
     if x > 0:

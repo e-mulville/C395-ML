@@ -47,9 +47,9 @@ noisyTreeSet = noisySet[200:]
 # print_metrics(metrics)
 
 # STEP 4 - PRUNING (AND EVALUATION AGAIN)
-print("\n------- 4 - PRUNING -------")
-print("\tPruning and evaluating cleanTree...")
-crossValidate(cleanSet)
+# print("\n------- 4 - PRUNING -------")
+# print("\tPruning and evaluating cleanTree...")
+# crossValidate(cleanSet)
 print("\t-----------------------------------")
 print("\tPruning and evaluating noisyTree...")
 crossValidate(noisySet)
