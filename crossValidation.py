@@ -38,11 +38,11 @@ def crossValidate(data_set):
             timeLeft = timeElapsed/percent * (100-percent)
             print ("\t", round(percent,2), "%\t Time elapsed: ", int(timeElapsed/3600),":",int((timeElapsed/60)%60),":",int(timeElapsed%60), "\t Time left: ", int(timeLeft/3600),":",int((timeLeft/60)%60),":",int(timeLeft%60), end="\t\t\r", sep="")
 
+    #average the test results
     print()
     print ("\tAverage test results:       ", round(np.average(test_results)*100,3), "%")
     print ("\tAverage test results after: ", round(np.average(test_results_after)*100,3), "%")
 
-    #average the test reults
 
 
 #########################################################
