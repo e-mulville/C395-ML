@@ -51,7 +51,7 @@ def evaluate(test_set, tree):
         for x in range(NUM_CLASSES):
             if (x != room):
                 fn += CM[room][x]
-            recallTemp = tp / (tp + fn)
+            recallTemp = np.float64(tp) / (tp + fn)
         recallSum += recallTemp
     recall = np.float64(recallSum) / NUM_CLASSES
         # 2 - Precision
