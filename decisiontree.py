@@ -92,12 +92,21 @@ def build_decision_tree(training_set, depth):
         "leaf" : 0
     }
 
-    if(depth > 50):
+    #deal with empty set bugs
+    if(depth > 75):
+        #if empty return a leaf to 1
         if(training_set.size == 0):
             this_node["leaf"] =  1
             return (this_node, depth+1)
-        this_node["leaf"] =  training_set[0][7]
+
+        #if not empty but recursed too far just make a leaf of the most popular tag
+        list_of_tags = []
+        for x in training_set:
+            list_of_tags.append(x[7])
+        this_node["leaf"] =  max(set(list_of_tags), key=list_of_tags.count)
         return (this_node, depth+1)
+
+
     #checks if its a leaf
     x = all_same_label(training_set)
     if x > 0:

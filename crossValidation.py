@@ -9,8 +9,8 @@ def crossValidate(data_set):
     #80 because size gives total data points not no. of rows
     empty_confusion_matrix = np.zeros((4,4))
     empty_metrics = (empty_confusion_matrix, 0.0, 0.0, 0.0, 0.0)
-    test_results = [[empty_metrics for a in range(9)] for b in range(10)]
-    test_results_after = [[empty_metrics for a in range(9)] for b in range(10)]
+    unpruned_results = [[empty_metrics for a in range(9)] for b in range(10)]
+    pruned_results = [[empty_metrics for a in range(9)] for b in range(10)]
 
     split_size = int(data_set.size/80)
 
@@ -30,9 +30,9 @@ def crossValidate(data_set):
             training_set = np.concatenate((split_training_set[0],split_training_set[2]), axis = 0)
 
             tree = getTree(training_set, 0)[0]
-            test_results[i][j] = evaluate(test_set, tree)
+            unpruned_results[i][j] = evaluate(test_set, tree)
             pruned_tree = prune(tree, validation_set)
-            test_results_after[i][j] = evaluate(test_set, pruned_tree)
+            pruned_results[i][j] = evaluate(test_set, pruned_tree)
 
             #stuff for printing nicely
             percent = (float(i*9)+float(j+1))/0.9
@@ -42,8 +42,8 @@ def crossValidate(data_set):
 
 
 
-    average_test_results = average_metrics(test_results)
-    average_test_results_after = average_metrics(test_results_after)
+    average_unpruned_results = average_metrics(unpruned_results)
+    average_pruned_results = average_metrics(pruned_results)
 
     print("Done:")
     print()
@@ -51,8 +51,8 @@ def crossValidate(data_set):
     print_metrics(average_test_results)
     print("\nResults after pruning:\n")
     print_metrics(average_test_results_after)
-    # print ("\tAverage test results:       ", round(np.average(test_results)*100,3), "%")
-    # print ("\tAverage test results after: ", round(np.average(test_results_after)*100,3), "%")
+    # print ("\tAverage test results:       ", round(np.average(unpruned_results)*100,3), "%")
+    # print ("\tAverage test results after: ", round(np.average(pruned_results)*100,3), "%")
 
 
 
