@@ -53,7 +53,7 @@ def evaluate(test_set, tree):
                 fn += CM[room][x]
             recallTemp = tp / (tp + fn)
         recallSum += recallTemp
-    recall = float(recallSum / NUM_CLASSES)
+    recall = np.float64(recallSum) / NUM_CLASSES
         # 2 - Precision
     precisionSum = 0
     for room in range(NUM_CLASSES):
@@ -62,11 +62,11 @@ def evaluate(test_set, tree):
         for x in range(NUM_CLASSES):
             if (x != room):
                 fp += CM[x][room]
-        precisionTemp = float(tp / (tp + fp))
+        precisionTemp = np.float64(tp) / (tp + fp)
         precisionSum += precisionTemp
-    precision = float(precisionSum / NUM_CLASSES)
+    precision = np.float64(precisionSum) / NUM_CLASSES
         # 3 - F score
-    Fscore = 2 * precision * recall / (precision + recall)
+    Fscore = np.float64(2 * precision * recall) / (precision + recall)
     # 4 - Classification rate
     correctClass = 0
     totalData = 0
@@ -74,7 +74,7 @@ def evaluate(test_set, tree):
         correctClass += CM[room][room]
         for x in range(NUM_CLASSES):
             totalData += CM[room][x]
-    classificationRate = float(correctClass / totalData)
+    classificationRate = np.float64(correctClass) / totalData
 
     # Return the metrics
     return (CM, recall, precision, Fscore, classificationRate)
@@ -84,7 +84,7 @@ def evaluate(test_set, tree):
 # (Confusion Matrix | Recall | Precision | F score | Classification rate)
 def print_metrics(metrics):
     def pretty(n):
-        return (round(n*100,3), "%")
+        return (str(round(n*100,4)) + " %")
     print("\tConfusion Matrix: ")
     print(metrics[0])
     print("\tRecall:              ", pretty(metrics[1]))
