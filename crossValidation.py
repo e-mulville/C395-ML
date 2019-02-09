@@ -64,9 +64,9 @@ def crossValidate(data_set):
 
     print("Done:")
     print()
-    print("Results before pruning:")
+    print("\nResults before pruning:\n")
     print_metrics(average_test_results)
-    print("Results after pruning:")
+    print("\nResults after pruning:\n")
     print_metrics(average_test_results_after)
     # print ("\tAverage test results:       ", round(np.average(test_results)*100,3), "%")
     # print ("\tAverage test results after: ", round(np.average(test_results_after)*100,3), "%")
