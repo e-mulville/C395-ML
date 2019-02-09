@@ -5,6 +5,8 @@ import time
 #checks if all of the data in a node has the same label
 def all_same_label(set):
 
+    if (set.size == 0):
+        return 5
     first_label = set[0][7]
 
     for i in set:
