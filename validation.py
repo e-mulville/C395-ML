@@ -86,7 +86,11 @@ def print_metrics(metrics):
     def pretty(n):
         return (str(round(n*100,4)) + " %")
     print("\tConfusion Matrix: ")
-    print(metrics[0])
+    rounded_matrix = np.zeros((4,4))
+    for i in range(4):
+        for j in range(4):
+            rounded_matrix[i][j] = round(metrics[0][i][j], 4)
+    print(rounded_matrix)
     print("\tRecall:              ", pretty(metrics[1]))
     print("\tPrecision:           ", pretty(metrics[2]))
     print("\tF Score:             ", pretty(metrics[3]))
@@ -99,7 +103,7 @@ def print_metrics(metrics):
 # def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
 #     """
 #         This function prints and plots the confusion matrix.
-        
+
 #         cm: confusion matrix, default to be np.int32 data type
 #         classes: a list of the class labels or class names
 #         normalize: normalize the matrix so that each row amounts to one
