@@ -12,6 +12,7 @@ def crossValidate(data_set):
 
     split_size = int(data_set.size/80)
 
+    startTime = time.time()
     total_improvment = [0.0, 0.0, 0.0, 0.0]
     #split out the testing data
     for i in range(0,10):
@@ -32,10 +33,14 @@ def crossValidate(data_set):
             pruned_tree = prune(tree, validation_set)
             test_results_after[i][j] = evaluate(test_set, pruned_tree)[4]
             percent = (float(i*9)+float(j+1))/0.9
-            print (percent, "%")
 
-    print (np.average(test_results))
-    print (np.average(test_results_after))
+            timeElapsed = time.time() - startTime
+            timeLeft = timeElapsed/percent * (100-percent)
+            print ("\t", round(percent,2), "%\t Time elapsed: ", int(timeElapsed/3600),":",int((timeElapsed/60)%60),":",int(timeElapsed%60), "\t Time left: ", int(timeLeft/3600),":",int((timeLeft/60)%60),":",int(timeLeft%60), end="\t\t\r", sep="")
+
+    print()
+    print ("\tAverage test results:       ", round(np.average(test_results)*100,3), "%")
+    print ("\tAverage test results after: ", round(np.average(test_results_after)*100,3), "%")
 
     #average the test reults
 
