@@ -23,7 +23,7 @@ def crossValidate(data_set):
         set_without_test = np.concatenate((split_set[0],split_set[2]),axis = 0)
 
         #split out the validation
-        for j in range(1):
+        for j in range(9):
 
             split_training_set = np.split(set_without_test,[j*split_size, (j+1)*split_size])
             validation_set = split_training_set[1]
