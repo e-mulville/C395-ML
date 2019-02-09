@@ -33,34 +33,17 @@ def crossValidate(data_set):
             test_results[i][j] = evaluate(test_set, tree)
             pruned_tree = prune(tree, validation_set)
             test_results_after[i][j] = evaluate(test_set, pruned_tree)
-            percent = (float(i*9)+float(j+1))/0.9
 
+            #stuff for printing nicely
+            percent = (float(i*9)+float(j+1))/0.9
             timeElapsed = time.time() - startTime
             timeLeft = timeElapsed/percent * (100-percent)
             print ("\r\t", round(percent,2), "%\t Time elapsed: ", int(timeElapsed/3600),":",int((timeElapsed/60)%60),":",int(timeElapsed%60), "\t Time left: ", int(timeLeft/3600),":",int((timeLeft/60)%60),":",int(timeLeft%60), end="\t\t", sep="")
 
-    #average the test results
-    recall_matrix = np.zeros((10,9))
-    precision_matrix = np.zeros((10,9))
-    F_matrix = np.zeros((10,9))
-    CR_matrix = np.zeros((10,9))
 
-    for i in range(10):
-        for j in range(9):
-            recall_matrix[i][j] = test_results[i][j][1]
-            precision_matrix[i][j] = test_results[i][j][2]
-            F_matrix[i][j] = test_results[i][j][3]
-            CR_matrix[i][j] = test_results[i][j][4]
 
-    average_test_results = (np.average(test_results[0]),np.average(recall_matrix),np.average(precision_matrix),np.average(F_matrix),np.average(CR_matrix))
-
-    for i in range(10):
-        for j in range(9):
-            recall_matrix[i][j] = test_results_after[i][j][1]
-            precision_matrix[i][j] = test_results_after[i][j][2]
-            F_matrix[i][j] = test_results_after[i][j][3]
-            CR_matrix[i][j] = test_results_after[i][j][4]
-    average_test_results_after = (np.average(test_results_after[0]),np.average(recall_matrix),np.average(precision_matrix),np.average(F_matrix),np.average(CR_matrix))
+    average_test_results = average_metrics(test_results)
+    average_test_results_after = average_metrics(test_results_after)
 
     print("Done:")
     print()
@@ -74,3 +57,21 @@ def crossValidate(data_set):
 
 
 #########################################################
+
+def average_metrics(metrics_matrix):
+        #average the test results
+        Confusion_matrix = np.zeros((10,9), dtype = object)
+        recall_matrix = np.zeros((10,9))
+        precision_matrix = np.zeros((10,9))
+        F_matrix = np.zeros((10,9))
+        CR_matrix = np.zeros((10,9))
+
+        for i in range(10):
+            for j in range(9):
+                Confusion_matrix[i][j] = metrics_matrix[i][j][0]
+                recall_matrix[i][j] = metrics_matrix[i][j][1]
+                precision_matrix[i][j] = metrics_matrix[i][j][2]
+                F_matrix[i][j] = metrics_matrix[i][j][3]
+                CR_matrix[i][j] = metrics_matrix[i][j][4]
+        average_metrics = (np.average(Confusion_matrix),np.average(recall_matrix),np.average(precision_matrix),np.average(F_matrix),np.average(CR_matrix))
+        return average_metrics
