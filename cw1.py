@@ -23,9 +23,15 @@ noisyTreeSet = noisySet[200:]
 # STEP 2 - CREATING DECISION TREES
 print("\n------- 2 - CREATING DECISION TREES -------")
 print("\tCreating tree from clean dataset...")
-cleanTree = build_decision_tree(cleanTreeSet, 0)[0]
+cleanTree = build_decision_tree(cleanTreeSet, 0)
+print("Depth of cleanTree:")
+print(cleanTree[1])
+cleanTree = cleanTree[0]
 print("\tCreating tree from noisy dataset...")
-noisyTree = build_decision_tree(noisyTreeSet, 0)[0]
+noisyTree = build_decision_tree(noisyTreeSet, 0)
+print("Depth of noisyTree:")
+print(noisyTree[1])
+noisyTree = noisyTree[0]
     # TODO - function to visualize the tree
 
 # STEP 3 - EVALUATION
