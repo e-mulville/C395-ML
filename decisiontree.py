@@ -93,7 +93,7 @@ def build_decision_tree(training_set, depth):
     }
 
     #deal with empty set bugs
-    if(depth > 75):
+    if(depth >= 75):
         #if empty return a leaf to 1
         if(training_set.size == 0):
             this_node["leaf"] =  1
