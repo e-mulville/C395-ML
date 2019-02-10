@@ -53,4 +53,14 @@ def prune(tree, validation_set):
                 current_node["right"] = right_node
 
     recursive_prune(tree, tree)
+    #print("after pruning:")
+    #print(pruning_depth(tree, 0))
     return tree
+
+def pruning_depth(this_node,depth):
+    if this_node["leaf"] > 0:
+        return(depth)
+    else:
+        left_depth = pruning_depth(this_node["left"], depth + 1)
+        right_depth = pruning_depth(this_node["right"], depth + 1)
+        return max(left_depth, right_depth)

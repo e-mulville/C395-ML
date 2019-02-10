@@ -29,7 +29,10 @@ def crossValidate(data_set):
             validation_set = split_training_set[1]
             training_set = np.concatenate((split_training_set[0],split_training_set[2]), axis = 0)
 
-            tree = getTree(training_set, 0)[0]
+            tree = getTree(training_set, 0)
+            #print("Depth of tree:")
+            #print(tree[1])
+            tree = tree[0]
             unpruned_results[i][j] = evaluate(test_set, tree)
             pruned_tree = prune(tree, validation_set)
             pruned_results[i][j] = evaluate(test_set, pruned_tree)
