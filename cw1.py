@@ -1,9 +1,30 @@
 import numpy as np
 from decisiontree import build_decision_tree
-# from pruning import *
+from pruning import prune
 from validation import evaluate, print_metrics
 from crossValidation import crossValidate
+from visualizer import visualizeTree as visualize
+from sys import argv
+import os
 
+
+# Parse command line input
+flag = ""
+fileout = ""
+if len(argv) > 1:
+    flag = argv[1]
+    if flag == "--visualize" and len(argv)==3:
+        fileout = argv[2]
+    elif flag == "-h" or flag == "--help":
+        os.system("cat README.txt")
+        exit(-1)
+    else:
+        print("USAGE:   python3  cw1.py                             --> Clean run")
+        print("         python3  cw1.py  --visualize  <filename>    --> Write to the specified file the visualized")
+        print("                                                         version of the decision trees created.")
+        print("         python3  cw1.py  -h | --help                --> Print README.txt")
+
+        print("\n**** Error: incorrect flag detected, input ignored. ****\n")
 
 
 
@@ -20,19 +41,39 @@ cleanTreeSet = cleanSet[200:]
 noisyTest = noisySet[:200]
 noisyTreeSet = noisySet[200:]
 
+
 # STEP 2 - CREATING DECISION TREES
 print("\n------- 2 - CREATING DECISION TREES -------")
 print("\tCreating tree from clean dataset...")
 cleanTree = build_decision_tree(cleanTreeSet, 0)
-print("Depth of cleanTree:")
-print(cleanTree[1])
+print("\tDepth of cleanTree:\t", cleanTree[1])
 cleanTree = cleanTree[0]
+visualize(cleanTree)
+pruneClean = prune(cleanTree, noisyTest)
+print("\t------------------------------------")
+visualize(pruneClean)
 print("\tCreating tree from noisy dataset...")
 noisyTree = build_decision_tree(noisyTreeSet, 0)
-print("Depth of noisyTree:")
-print(noisyTree[1])
+print("\tDepth of noisyTree:\t", noisyTree[1])
 noisyTree = noisyTree[0]
-    # TODO - function to visualize the tree
+    # If requested, print visualized trees to file
+if fileout != "":
+    visualClean = visualize(cleanTree)
+    visualNoisy = visualize(noisyTree)
+    try:
+        f = open(fileout, "w+") 
+        f.write("**** CLEAN TREE ****\n")
+        f.write(visualClean)
+        f.write("\n\n\n")
+        f.write("**** NOISY TREE ****\n")
+        f.write(visualNoisy)
+        print("\t------------------------------------")
+        print("\tTrees correctly printed to file.")
+    except IOError:
+        print("\t------------------------------------")
+        print("\t*** Error: Could not open file! Trees visualization NOT printed! ***")
+
+
 
 # STEP 3 - EVALUATION
 print("\n------- 3 - EVALUATION -------")

@@ -1,7 +1,7 @@
-# Generate a structured string representing the tree and print it to std:out
+# Generate a structured string representing the tree 
 def visualizeTree(tree):
     treeLines = treeToLines(tree, 0, False, '-')[0]
-    print('\n' + '\n'.join((line.rstrip() for line in treeLines)))
+    return('\n' + '\n'.join((line.rstrip() for line in treeLines)))
 
 
 # Recursively generate a list of lines representing the tree
