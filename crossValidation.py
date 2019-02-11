@@ -41,7 +41,7 @@ def crossValidate(data_set):
             percent = (float(i*9)+float(j+1))/0.9
             timeElapsed = time.time() - startTime
             timeLeft = timeElapsed/percent * (100-percent)
-            print ("\r\t", round(percent,2), "%\t Time elapsed: ", int(timeElapsed/3600),":",int((timeElapsed/60)%60),":",int(timeElapsed%60), "\t Time left: ", int(timeLeft/3600),":",int((timeLeft/60)%60),":",int(timeLeft%60), end="\t\t", sep="")
+            print ("\r\t", round(percent,2), "%\t Time elapsed: ", int(timeElapsed/3600),":",int((timeElapsed/60)%60),":",int(timeElapsed%60), "\t Time left: ", int(timeLeft/3600),":",int((timeLeft/60)%60),":",int(timeLeft%60), end="      ", sep="")
 
 
 

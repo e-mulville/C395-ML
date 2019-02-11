@@ -1,8 +1,8 @@
 # Import libraries
 import numpy as np
 import math
-# import matplotlib.pyplot as plt
-# import itertools
+import warnings
+warnings.simplefilter("error")
 
 
 # Define constants
@@ -51,7 +51,10 @@ def evaluate(test_set, tree):
         for x in range(NUM_CLASSES):
             if (x != room):
                 fn += CM[room][x]
+        try:
             recallTemp = np.float64(tp) / (tp + fn)
+        except:
+            pass
         recallSum += recallTemp
     recall = np.float64(recallSum) / NUM_CLASSES
         # 2 - Precision
@@ -62,7 +65,10 @@ def evaluate(test_set, tree):
         for x in range(NUM_CLASSES):
             if (x != room):
                 fp += CM[x][room]
-        precisionTemp = np.float64(tp) / (tp + fp)
+        try:
+            precisionTemp = np.float64(tp) / (tp + fp)
+        except:
+            pass
         precisionSum += precisionTemp
     precision = np.float64(precisionSum) / NUM_CLASSES
         # 3 - F score
@@ -96,39 +102,3 @@ def print_metrics(metrics):
     print("\tF Score:             ", pretty(metrics[3]))
     print("\tClassification Rate: ", pretty(metrics[4]))
 
-
-
-
-# # This function was given to the students for a CW in CO316 Computer Vision to display the confusion matrix.
-# def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix', cmap=plt.cm.Blues):
-#     """
-#         This function prints and plots the confusion matrix.
-
-#         cm: confusion matrix, default to be np.int32 data type
-#         classes: a list of the class labels or class names
-#         normalize: normalize the matrix so that each row amounts to one
-#         cmap: color map
-#     """
-#     if normalize:
-#         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-#         print("Normalized confusion matrix")
-#     else:
-#         print('Confusion matrix, without normalization')
-#     print(cm)
-
-#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-#     plt.title(title)
-#     plt.colorbar()
-#     tick_marks = np.arange(len(classes))
-#     plt.xticks(tick_marks, classes, rotation=45)
-#     plt.yticks(tick_marks, classes)
-
-#     fmt = '.2f' if normalize else '.0f'
-#     thresh = cm.max() / 2.
-#     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-#         plt.text(j, i, format(cm[i, j], fmt),
-#                  horizontalalignment="center",
-#                  color="white" if cm[i, j] > thresh else "black")
-#     plt.ylabel('True label')
-#     plt.xlabel('Predicted label')
-#     plt.tight_layout()

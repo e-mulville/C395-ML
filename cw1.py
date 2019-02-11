@@ -8,33 +8,63 @@ from sys import argv
 import os
 
 
+# Initialize environmental variables
+cleanSet_filePath = 'co395-cbc-dt/wifi_db/clean_dataset.txt'
+noisySet_filePath = "co395-cbc-dt/wifi_db/noisy_dataset.txt"
+
+
+def getSafe(ls, index):
+    try:
+        return ls[index]
+    except IndexError:
+        return None
+
+
+
 # Parse command line input
 flag = ""
 fileout = ""
-if len(argv) > 1:
-    flag = argv[1]
-    if flag == "--visualize" and len(argv)==3:
-        fileout = argv[2]
-    elif flag == "-h" or flag == "--help":
-        os.system("cat README.txt")
-        exit(-1)
-    else:
-        print("USAGE:   python3  cw1.py                             --> Clean run")
-        print("         python3  cw1.py  --visualize  <filename>    --> Write to the specified file the visualized")
-        print("                                                         version of the decision trees created.")
-        print("         python3  cw1.py  -h | --help                --> Print README.txt")
+inParams = argv
+if len(inParams) > 1:
+    for i in range(1,len(argv)):
+        if inParams[i] != "SEEN":
+            curParam = inParams[i]
+            nextParam = getSafe(inParams, i+1)
 
-        print("\n**** Error: incorrect flag detected, input ignored. ****\n")
+            if curParam == "--visualize" and nextParam != None:
+                fileout = nextParam
+                inParams[i+1] = "SEEN"   
+            elif inParams[i] == "--inClean" and nextParam != None:
+                cleanSet_filePath = nextParam
+                inParams[i+1] = "SEEN"
+            elif inParams[i] == "--inNoisy" and nextParam != None:
+                noisySet_filePath = nextParam
+                inParams[i+1] = "SEEN"
+            elif inParams[i] in ["-h", "--help"]:
+                os.system("cat README.txt")
+                exit(-1)                
+            else:
+                print("USAGE:   python3  cw1.py  [flags]")
+                print()
+                print("FLAGS:   --visualize  <filename>             --> Write to the specified file the visualized")
+                print("                                                 version of the decision trees created.")
+                print("                  --inClean    <filename>    --> Use the specified file as Clean dataset")
+                print("                  --inNoisy    <filename>    --> Use the specified file as Noisy dataset")
+                print("                  --help                     --> Print README.txt")
+                print("                  -h                         --> Print README.txt")
+
+                print("\n**** Error: incorrect flag detected. ****\n")
+                exit(-1)
 
 
 
 # STEP 1 - LOADING DATA
 print("\n------- 1 - LOADING DATA -------")
 print("\tReading clean dataset...")
-cleanSet = np.loadtxt('co395-cbc-dt/wifi_db/clean_dataset.txt')
+cleanSet = np.loadtxt(cleanSet_filePath)
 np.random.shuffle(cleanSet)
 print("\tReading noisy dataset...")
-noisySet = np.loadtxt("co395-cbc-dt/wifi_db/noisy_dataset.txt")
+noisySet = np.loadtxt(noisySet_filePath)
 print("\tSplitting data into training and test sets...")
 cleanTest = cleanSet[:200]
 cleanTreeSet = cleanSet[200:]
@@ -45,33 +75,45 @@ noisyTreeSet = noisySet[200:]
 # STEP 2 - CREATING DECISION TREES
 print("\n------- 2 - CREATING DECISION TREES -------")
 print("\tCreating tree from clean dataset...")
-cleanTree = build_decision_tree(cleanTreeSet, 0)
-print("\tDepth of cleanTree:\t", cleanTree[1])
-cleanTree = cleanTree[0]
-visualize(cleanTree)
-pruneClean = prune(cleanTree, noisyTest)
+cleanTree, cleanDepth = build_decision_tree(cleanTreeSet, 0)
+print("\tDepth of cleanTree:\t", cleanDepth)
+
 print("\t------------------------------------")
-visualize(pruneClean)
 print("\tCreating tree from noisy dataset...")
-noisyTree = build_decision_tree(noisyTreeSet, 0)
-print("\tDepth of noisyTree:\t", noisyTree[1])
-noisyTree = noisyTree[0]
+noisyTree , noisyDepth= build_decision_tree(noisyTreeSet, 0)
+print("\tDepth of noisyTree:\t", noisyDepth)
+
     # If requested, print visualized trees to file
+    # (original and pruned version)
 if fileout != "":
     visualClean = visualize(cleanTree)
     visualNoisy = visualize(noisyTree)
+
+    prunedClean = prune(cleanTree, cleanTest)
+    prunedNoisy = prune(noisyTree, noisyTest)
+    
+    visualPrunedClean = visualize(prunedClean)
+    visualPrunedNoisy = visualize(prunedNoisy)
     try:
         f = open(fileout, "w+") 
-        f.write("**** CLEAN TREE ****\n")
+        f.write("**** CLEAN TREE -> NOT pruned ****\n")
         f.write(visualClean)
         f.write("\n\n\n")
-        f.write("**** NOISY TREE ****\n")
+        f.write("**** CLEAN TREE -> pruned ****\n")
+        f.write(visualPrunedClean)
+        f.write("\n\n\n")
+        f.write("**** NOISY TREE -> NOT pruned) ****\n")
         f.write(visualNoisy)
+        f.write("\n\n\n")
+        f.write("**** NOISY TREE -> pruned) ****\n")
+        f.write(visualPrunedNoisy)
+        f.close()
+
         print("\t------------------------------------")
         print("\tTrees correctly printed to file.")
     except IOError:
         print("\t------------------------------------")
-        print("\t*** Error: Could not open file! Trees visualization NOT printed! ***")
+        print("\t*** IOError: Could not write to file! Trees visualization NOT printed! ***")
 
 
 
