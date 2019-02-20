@@ -1,14 +1,8 @@
 import numpy as np
 
-from ../nn_lib import (
-    MultiLayerNetwork,
-    Trainer,
-    Preprocessor,
-    save_network,
-    load_network,
-)
-from ../illustrate import illustrate_results_FM
-
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
 
 def main():
     dataset = np.loadtxt("FM_dataset.dat")
@@ -16,6 +10,7 @@ def main():
     #                       ** START OF YOUR CODE **
     #######################################################################
 
+    print(dataset.shape)
     #######################################################################
     #                       ** END OF YOUR CODE **
     #######################################################################
