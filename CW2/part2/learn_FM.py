@@ -10,11 +10,14 @@ def main():
     #                       ** START OF YOUR CODE **
     #######################################################################
 
-    print(dataset.shape)
+    [input, label] = np.split(dataset, 2, axis = 1)
+
+
+    print (np.mean(input, axis = 0))
+
     #######################################################################
     #                       ** END OF YOUR CODE **
     #######################################################################
-    illustrate_results_FM(network, prep)
 
 
 if __name__ == "__main__":
