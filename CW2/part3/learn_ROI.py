@@ -8,7 +8,7 @@ from ../nn_lib import (
     load_network,
 )
 
-from illustrate import illustrate_results_ROI
+from ../illustrate import illustrate_results_ROI
 
 
 def main():

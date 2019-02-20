@@ -7,7 +7,7 @@ from ../nn_lib import (
     save_network,
     load_network,
 )
-from illustrate import illustrate_results_FM
+from ../illustrate import illustrate_results_FM
 
 
 def main():
