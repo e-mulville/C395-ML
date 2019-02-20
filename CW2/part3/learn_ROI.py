@@ -4,46 +4,61 @@ import keras
 from keras.models import Sequential
 from keras.layers import Input, Dense, Dropout, Flatten
 from sklearn.model_selection import train_test_split
-
-
-
 # from ../illustrate import illustrate_results_ROI
+
+
 NUM_CLASSES = 4
 
 def main():
     ############################
     ##### 1 - LOAD DATASET #####
     ############################
+
+    print("\n====== 1. Load and split dataset ======\n")
+
     dataset = np.loadtxt("ROI_dataset.dat")
-    y_shape = range(NUM_CLASSES)
-    x_train, x_test, y_train, y_test = train_test_split(dataset, y_shape,  test_size = 0.25 )
-    print(dataset[1230])
-
-
+    np.random.shuffle(dataset)
+    labels = []
+    data = []
+    for entry in dataset:
+        data.append(entry[0:3])
+        labels.append(entry[3:7])
+        
+    # Split dataset
+    x_train_temp, x_test_temp, y_train_temp, y_test_temp = train_test_split(data, labels, test_size = 0.15 )
+    x_train = np.array(x_train_temp)
+    x_test = np.array(x_test_temp)
+    y_train = np.array(y_train_temp)
+    y_test = np.array(y_test_temp)
 
 
     ##############################
     ##### 2 - DEFINE NETWORK #####
     ##############################
+
+    print("\n====== 2. Initialize network ======\n")
     # Init
     network = keras.models.Sequential()
     # Layers
-    network.add( Dense(30, input_shape=(3,), activation="sigmoid") )
+    network.add( Dense(100, input_shape=(3,), activation="relu") )
     network.add( Dense(NUM_CLASSES, activation="softmax") )
 
     # Define training parameters
     network.compile(    loss = "categorical_crossentropy",
-                        optimizer = "sgd",
+                        optimizer = "adam",
                         metrics = ["accuracy"])
 
-    print(network.summary())
+    print(network.summary()) # DEBUG
+    
 
     #############################
     ##### 3 - TRAIN NETWORK #####
     #############################
-    batch_size = 300
+    print("\n====== 3. Train network ======\n")
+
+    batch_size = 50
     epochs = 100
-    network.fit(x_train, y_train, batch_size, epochs)
+    network.fit(x_train, y_train, batch_size, epochs, verbose=0)
 
 
 
@@ -51,12 +66,13 @@ def main():
     ############################
     ##### 4 - TEST NETWORK #####
     ############################
-    score = network.evaluate(x_test, y_test)
+    print("\n====== 4. Test network ======\n")
+    score = network.evaluate(x_test, y_test, verbose=0)
     print("Test loss    :", score[0])
     print("Test accuracy:", score[1]*100, "%")
 
     # Get predictions on test data
-    predictions = newtwork.predict(x_test)
+    predictions = network.predict(x_test)
     predictions.tolist()
     y_true = y_test.tolist()
 
@@ -70,16 +86,18 @@ def main():
                 predictions[i][j] = 1
 
     # Get CM data
-    cm = np.zeros((NUM_CLASSES, NUM_CLASSES))
+    cm = np.zeros((NUM_CLASSES, NUM_CLASSES), dtype=int)
     for i in range(len(y_true)):
         classPredicted = np.where(predictions[i] == 1)[0][0]
         classTrue = np.where(y_test[i] == 1)[0][0]
         assert(classPredicted in range(NUM_CLASSES))
         assert(classTrue in range(NUM_CLASSES))
-        cm[classPredicted][classTrue] += 1
+        cm[classPredicted][classTrue] += int(1)
 
     # Plot CM
-    classes = ["ROI-1", "ROI-2", "ROI-3", "None"]
+    print("\n\n")
+    print(cm)
+    # classes = ["ROI-1", "ROI-2", "ROI-3", "None"]
     # plot_confusion_matrix(cm, classes, normalize=True) --> TODO: include function
 
     # illustrate_results_ROI(network, prep)
