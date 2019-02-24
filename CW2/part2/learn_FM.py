@@ -21,7 +21,7 @@ def main():
     ############################
     ##### 1 - LOAD DATASET #####
     ############################
-    rate = 0.5
+
 
     [data, labels] = np.split(dataset, 2, axis = 1)
 
@@ -36,11 +36,13 @@ def main():
     ##### 2 - DEFINE NETWORK #####
     ##############################
 
+    rate = 0.25
+
     network = keras.models.Sequential()
     # Layers
-    network.add( Dense(200, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
+    network.add( Dense(500, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
     network.add( Dropout(rate) )
-    network.add( Dense(20, input_shape=(100,), activation="relu", kernel_constraint=max_norm(3)) )
+    network.add( Dense(100, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
     network.add( Dense(NUM_CLASSES, activation="linear") )
 
     # Define training parameters
@@ -67,13 +69,22 @@ def main():
     print("\n====== 4. Test network ======\n")
     score = network.evaluate(x_test, y_test, verbose=0)
     print("Test loss    :", score[0])
-    print("Test accuracy:", score[1]*100, "%")
+    print("Test accuracy:", score[1], "%")
 
     # Get predictions on test data
     predictions = network.predict(x_test)
     predictions.tolist()
     y_true = y_test.tolist()
 
+    loss = [0.0, 0.0, 0.0]
+
+    for i in range(len(predictions)):
+        for j in range(len(predictions[i])):
+            loss[j] += ((predictions[i][j] - y_true[i][j])**2)
+
+    for i in range(3):
+         loss[i] = loss[i]/len(predictions)
+    print("Loss:", loss)
     # # Turn predictions into a 1-hot encoded array
     # for i in range(len(predictions)):
     #     maxVal = max(predictions[i])
