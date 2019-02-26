@@ -2,7 +2,7 @@ import numpy as np
 
 import tensorflow as tf
 import keras
-from keras.models import Sequential
+from keras.models import Sequential, model_from_json
 from keras.layers import Input, Dense, Dropout, Flatten
 from keras.constraints import max_norm
 from keras.optimizers import SGD
@@ -38,78 +38,96 @@ def main():
 
     rate = 0.25
 
-    network = keras.models.Sequential()
-    # Layers
-    network.add( Dense(500, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
-    network.add( Dropout(rate) )
-    network.add( Dense(100, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
-    network.add( Dense(NUM_CLASSES, activation="linear") )
 
-    # Define training parameters
-    network.compile(    loss = 'mean_squared_error',
-                        optimizer = "adam",
-                        metrics = ["accuracy"])
+    def first_network():
+        network = keras.models.Sequential()
+        # Layers
+        network.add( Dense(700, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
+        network.add( Dropout(rate) )
+        network.add( Dense(100, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
+        network.add( Dense(NUM_CLASSES, activation="linear") )
 
-    print(network.summary()) # DEBUG
+        # Define training parameters
+        network.compile(    loss = 'mean_squared_error',
+                            optimizer = "adam",
+                            metrics = ["accuracy"])
 
-    #############################
-    ##### 3 - TRAIN NETWORK #####
-    #############################
-    print("\n====== 3. Train network ======\n")
+        print(network.summary()) # DEBUG
 
-    batch_size = 50
-    epochs = 1000
-    network.fit(x_train, y_train, batch_size, epochs, verbose=0)
+        #############################
+        ##### 3 - TRAIN NETWORK #####
+        #############################
+        print("\n====== 3. Train network ======\n")
 
+        batch_size = 50
+        epochs = 1000
+        network.fit(x_train, y_train, batch_size, epochs, verbose=0)
 
+        ############################
+        ##### 4 - TEST NETWORK #####
+        ############################
+        print("\n====== 4. Test network ======\n")
+        score = network.evaluate(x_test, y_test, verbose=0)
+        print("Test loss    :", score[0])
+        print("Test accuracy:", score[1], "%")
 
-    ############################
-    ##### 4 - TEST NETWORK #####
-    ############################
-    print("\n====== 4. Test network ======\n")
-    score = network.evaluate(x_test, y_test, verbose=0)
-    print("Test loss    :", score[0])
-    print("Test accuracy:", score[1], "%")
+        # Get predictions on test data
+        predictions = network.predict(x_test)
+        predictions.tolist()
+        y_true = y_test.tolist()
 
-    # Get predictions on test data
-    predictions = network.predict(x_test)
-    predictions.tolist()
-    y_true = y_test.tolist()
+        loss = [0.0, 0.0, 0.0]
 
-    loss = [0.0, 0.0, 0.0]
+        for i in range(len(predictions)):
+            for j in range(len(predictions[i])):
+                loss[j] += ((predictions[i][j] - y_true[i][j])**2)
 
-    for i in range(len(predictions)):
-        for j in range(len(predictions[i])):
-            loss[j] += ((predictions[i][j] - y_true[i][j])**2)
+        for i in range(3):
+             loss[i] = loss[i]/len(predictions)
+             loss[i] = loss[i]**0.5
+        print("Loss:", loss)
 
-    for i in range(3):
-         loss[i] = loss[i]/len(predictions)
-    print("Loss:", loss)
-    # # Turn predictions into a 1-hot encoded array
-    # for i in range(len(predictions)):
-    #     maxVal = max(predictions[i])
-    #     for j in range(len(predictions[i])):
-    #         if (predictions[i][j] < maxVal):
-    #             predictions[i][j] = 0
-    #         else:
-    #             predictions[i][j] = 1
-    #
-    # # Get CM data
-    # cm = np.zeros((NUM_CLASSES, NUM_CLASSES), dtype=int)
-    # for i in range(len(y_true)):
-    #     classPredicted = np.where(predictions[i] == 1)[0][0]
-    #     classTrue = np.where(y_test[i] == 1)[0][0]
-    #     assert(classPredicted in range(NUM_CLASSES))
-    #     assert(classTrue in range(NUM_CLASSES))
-    #     cm[classPredicted][classTrue] += int(1)
-    #
-    # # Plot CM
-    # print("\n\n")
-    # print(cm)
+    def hyperparameter():
+
+        # Layers
 
 
-    # classes = ["ROI-1", "ROI-2", "ROI-3", "None"]
-    # plot_confusion_matrix(cm, classes, normalize=True) --> TODO: include function
+        for j in range(1,7):
+            for i in range(0,3):
+                network = keras.models.Sequential()
+
+                network.add( Dense(j*100, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
+
+                 #Layers
+                for x in range(i):
+                    network.add( Dense(j*100, activation="relu", kernel_constraint=max_norm(3) ) )
+
+                network.add( Dense(NUM_CLASSES, activation="linear") )
+
+                network.compile(    loss = 'mean_squared_error',
+                                    optimizer = "adam",
+                                    metrics = ["accuracy"])
+                print(network.summary())
+
+
+        network_json = network.to_json()
+        with open("network.json", "w") as json_file:
+            json_file.write(network_json)
+        # serialize weights to HDF5
+        model.save_weights("network.h5")
+        print("Saved model to disk")
+
+    def predict_hidden(dataset):
+        json_file = open('network.json', 'r')
+        loaded_network_json = json_file.read()
+        json_file.close()
+        loaded_network = model_from_json(loaded_network_json)
+        # load weights into new model
+        loaded_network.load_weights("model.h5")
+        print("Loaded model from disk")
+
+    first_network()
+    hyperparameter()
 
 
     #######################################################################
