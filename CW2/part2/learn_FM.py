@@ -6,6 +6,7 @@ from keras.models import Sequential, model_from_json
 from keras.layers import Input, Dense, Dropout, Flatten
 from keras.constraints import max_norm
 from keras.optimizers import SGD
+from keras.layers.normalization import BatchNormalization
 
 from sklearn.model_selection import train_test_split
 
@@ -13,6 +14,7 @@ NUM_CLASSES = 3
 
 def main():
     dataset = np.loadtxt("FM_dataset.dat")
+    #np.random.shuffle(dataset)
     #######################################################################
     #                       ** START OF YOUR CODE **
     #######################################################################
@@ -52,7 +54,7 @@ def main():
 
         for i in range(3):
              loss[i] = loss[i]/len(predictions)
-             loss[i] = loss[i]**0.5
+             loss[i] = loss[i]
 
         return ((loss[0]+loss[1]+loss[2])/3)
 
@@ -97,9 +99,8 @@ def main():
         best_performance = 100.0
         best_network = keras.models.Sequential()
 
-        for neurons in range(4,8):
-            for layers in range(0,2):
-            #for num_epochs in range (1,7):
+        for neurons in range(12,13):
+            for num_epochs in range (1,5):
             #for dropout_rate in range(0,4):
 
                     #INITAL NETWORK
@@ -109,10 +110,6 @@ def main():
                 network.add( Dense(neurons*100, input_shape=(3,), activation="relu") )
                 #network.add( Dropout(dropout_rate*0.1))
 
-                 #ADDING MORE LAYERS
-                for x in range(layers):
-                    network.add( Dense(neurons*100, activation="relu", kernel_constraint=max_norm(3) ) )
-                    #network.add( Dropout(dropout_rate*0.1))
                 network.add( Dense(NUM_CLASSES, activation="linear") )
 
                 network.compile(    loss = 'mean_squared_error',
@@ -124,16 +121,17 @@ def main():
                 #EVALUATION
 
                 print("################ Training ##################")
+                print("########## epochs:", 250*num_epochs ,"##############")
 
                 batch_size = 50
-                epochs = 1000
+                epochs = 250*num_epochs
                 network.fit(x_train, y_train, batch_size, epochs, verbose=0)
 
                 score = network.evaluate(x_test, y_test, verbose=0)
                 print("Test loss    :", score[0])
                 print("Test accuracy:", score[1], "%")
 
-
+                print(evaluate(network))
 
                 if evaluate(network) < best_performance:
                     best_performance = evaluate(network)
@@ -165,6 +163,12 @@ def main():
         # load weights into new model
         loaded_network.load_weights("model.h5")
         print("Loaded model from disk")
+
+
+        dataset = normalize(dataset)
+
+        predictions = loaded_network.predict(dataset)
+        predictions.tolist()
 
         score = loaded_network.evaluate(x_test, y_test, verbose=0)
         print("Test loss    :", score[0])
