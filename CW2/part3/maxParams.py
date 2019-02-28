@@ -1,6 +1,6 @@
 # Import libraries
 from learn_ROI import load_dataset, init_network, evaluate_network
-
+import time
 
 # GET DATA
 (x_train, y_train, x_test, y_test) = load_dataset(0.2) # get validation set
@@ -9,9 +9,9 @@ x_validation = x_train[:cutIndex]
 y_validation = y_train[:cutIndex]
 
 # DEFINE PARAMETERS
-nHidden = [10, 50, 100 , 150, 200]
-actHidden = ["sigmoid", "relu"]
-dropout = [0.10, 0.25, 0.50, 0.75]
+nHidden = [50, 100 , 150, 200]
+actHidden = ["relu"]
+dropout = [0.1, 0.25, 0.5]
 opt = ["adam", "sgd"]
 
 batchSize = [50, 100, 150, 200]
@@ -27,6 +27,7 @@ iterationTotal = len(nHidden) * len(actHidden) * len(dropout) * len(opt) * len(b
 
 # ITERATE THROUGH ALL PARAMS COMBINATIONS
 iterationCount = 0
+startTime = int(time.time())
 for nH in nHidden:
     for aH in actHidden:
         for dO in dropout:
@@ -53,7 +54,17 @@ for nH in nHidden:
                             bestScenario = (bestParams, score[1])
                             bestNetwork = model
                             print("======> Found better combination, accuracy: ", round(score[1]*100, 3), "%")
-
+                            print("======> Params:", bestParams)
+                        
+                        curTime = int(time.time())
+                        timeElapsed = curTime - startTime
+                        totalTimeEstimate = timeElapsed / (iterationCount/iterationTotal)
+                        timeLeft = totalTimeEstimate - timeElapsed
+                        seconds = timeLeft % 60
+                        minutes = int(timeLeft/60)%60
+                        hours = int(timeLeft/3600)
+                        print("Time left --> ", hours, ":", minutes ,":", seconds, "\n")
+                        
 # TELL USER BEST COMBINATION
 print()
 print("\nThe best performance of", round(bestScenario[1]*100, 3), "%" , "is acheived with the parameters:")
