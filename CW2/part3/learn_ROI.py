@@ -106,8 +106,9 @@ def init_network(hiddenNeurons, hiddenActivation, dropout, optimizer, verbose):
 def evaluate_network(network, x_test, y_test, verbose=0):
 
     score = network.evaluate(x_test, y_test, verbose=verbose)
-    print("Test loss    :", round(score[0], 4))
-    print("Test accuracy:",round(score[1]*100, 3), "%")
+    print("Test loss       :", round(score[0], 4))
+    print("Test accuracy   :",round(score[1]*100, 3), "%")
+
 
     # Get predictions on test data
     predictions = network.predict(x_test)
@@ -133,13 +134,10 @@ def evaluate_network(network, x_test, y_test, verbose=0):
         cm[classPredicted][classTrue] += int(1)
 
     # Plot CM
-    print("\n\n")
+    print("\n")
+    print("Confusion matrix:")
     print(cm)
     print("\n")
-    # classes = ["ROI-1", "ROI-2", "ROI-3", "None"]
-    # plot_confusion_matrix(cm, classes, normalize=True) --> TODO: include function
-
-    # illustrate_results_ROI(network, prep)
 
 
 
