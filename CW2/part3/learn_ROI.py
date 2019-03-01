@@ -23,44 +23,48 @@ def main():
     ##### 1 - LOAD DATASET #####
     ############################
 
-    print("\n====== 1. Load and split dataset ======\n")
+    def initalNetwork():
+        print("\n====== 1. Load and split dataset ======\n")
 
-    (x_train, y_train, x_test, y_test) = load_dataset(test_size = 0.2)
+        (x_train, y_train, x_test, y_test) = load_dataset(test_size = 0.2)
 
+
+        ##############################
+        ##### 2 - DEFINE NETWORK #####
+        ##############################
+
+        print("\n====== 2. Initialize network ======\n")
+
+        network = init_network( hiddenNeurons = 150,
+                                hiddenActivation = "relu",
+                                dropout = 0.25,
+                                optimizer = "adam",
+                                verbose = 1)
+
+
+        #############################
+        ##### 3 - TRAIN NETWORK #####
+        #############################
+        print("\n====== 3. Train network ======\n")
+
+        batch_size = 50
+        epochs = 1000
+        network.fit(x_train, y_train, batch_size, epochs, verbose=0)
+
+
+
+
+        ############################
+        ##### 4 - TEST NETWORK #####
+        ############################
+        print("\n====== 4. Test network ======\n")
+        evaluate_network(network, x_test, y_test)
+
+        # network.save('best_model.h5')
+        # print("\nNetwork saved to file!")
     
-    ##############################
-    ##### 2 - DEFINE NETWORK #####
-    ##############################
 
-    print("\n====== 2. Initialize network ======\n")
-
-    network = init_network( hiddenNeurons = 150,
-                            hiddenActivation = "relu",
-                            dropout = 0.25,
-                            optimizer = "adam",
-                            verbose = 1)
-    
-
-    #############################
-    ##### 3 - TRAIN NETWORK #####
-    #############################
-    print("\n====== 3. Train network ======\n")
-
-    batch_size = 50
-    epochs = 1000
-    network.fit(x_train, y_train, batch_size, epochs, verbose=0)
-
-
-
-
-    ############################
-    ##### 4 - TEST NETWORK #####
-    ############################
-    print("\n====== 4. Test network ======\n")
-    evaluate_network(network, x_test, y_test)
-
-    # network.save('best_model.h5')
-    # print("\nNetwork saved to file!")
+    predict_hidden(dataset)
 
 ##############################################################
 
@@ -72,13 +76,13 @@ def load_dataset(test_size):
         for entry in dataset:
             data.append(entry[0:3])
             labels.append(entry[3:7])
-            
+
         # Split dataset
         x_train_temp, x_test_temp, y_train_temp, y_test_temp = train_test_split(data, labels, test_size = test_size)
         x_train = np.array(x_train_temp)
         x_test = np.array(x_test_temp)
         y_train = np.array(y_train_temp)
-        y_test = np.array(y_test_temp) 
+        y_test = np.array(y_test_temp)
 
         return(x_train, y_train, x_test, y_test)
 
@@ -99,7 +103,7 @@ def init_network(hiddenNeurons, hiddenActivation, dropout, optimizer, verbose):
 
         if (verbose):
             print(network.summary()) # DEBUG
-        
+
         return network
 
 
@@ -169,8 +173,3 @@ def predict_hidden(dataset):
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

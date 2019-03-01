@@ -12,6 +12,21 @@ from sklearn.model_selection import train_test_split
 
 NUM_CLASSES = 3
 
+def predict_hidden(dataset):
+
+    network = load_model('network.h5')
+
+    print("Loaded model from disk")
+
+    print(network.summary())
+
+
+    input_data = np.split(dataset,2,axis=1)[0]
+    predictions = network.predict(input_data)
+
+    return predictions
+
+
 def main():
     dataset = np.loadtxt("FM_dataset.dat")
     #np.random.shuffle(dataset)
@@ -101,16 +116,13 @@ def main():
         best_performance = 100.0
         best_network = keras.models.Sequential()
 
-        for neurons in range(8,9):
-            for num_epochs in range (2,3):
-            #for dropout_rate in range(0,4):
-
+        for neurons in range(7,14):
+            for epochs in range (1,8):
                     #INITAL NETWORK
 
                 network = keras.models.Sequential()
 
                 network.add( Dense(neurons*100, input_shape=(3,), activation="relu") )
-                #network.add( Dropout(dropout_rate*0.1))
 
                 network.add( Dense(NUM_CLASSES, activation="linear") )
 
@@ -118,15 +130,13 @@ def main():
                                     optimizer = "adam",
                                     metrics = ["accuracy"])
 
-                print(network.summary()) # DEBUG
+                print(network.summary())
 
-                #EVALUATION
 
                 print("################ Training ##################")
-                print("########## epochs:", 250*num_epochs ,"##############")
 
                 batch_size = 50
-                epochs = 250*num_epochs
+                epochs = 250*epochs
                 network.fit(x_train, y_train, batch_size, epochs, verbose=0)
 
                 score = network.evaluate(x_test, y_test, verbose=0)
@@ -139,12 +149,6 @@ def main():
                     best_performance = evaluate(network)
                     best_network = network
 
-                # print("Best network so far:")
-                # print(best_network.summary())
-
-
-
-
         network = best_network
 
         print("Best network is:")
@@ -152,32 +156,19 @@ def main():
         network.save("network.h5")
         print("Saved model to disk")
 
-    def predict_hidden(dataset):
 
-        network = load_model('network.h5')
-
-        print("Loaded model from disk")
-
-        print(network.summary())
-
-        data = dataset
-        for entry in dataset:
-            data.append(entry[0:3])
-
-        input_data = np.array(data)
-        predictions = network.predict(input_data)
-
-        return predictions
 
 
     #first_network()
-    hyperparameter()
-    #predict_hidden(dataset)
+    #hyperparameter()
+    print(predict_hidden(dataset))
 
 
     #######################################################################
     #                       ** END OF YOUR CODE **
     #######################################################################
+
+
 
 
 if __name__ == "__main__":
