@@ -2,7 +2,7 @@ import numpy as np
 
 import tensorflow as tf
 import keras
-from keras.models import Sequential, model_from_json
+from keras.models import Sequential, load_model
 from keras.layers import Input, Dense, Dropout, Flatten
 from keras.constraints import max_norm
 from keras.optimizers import SGD
@@ -38,7 +38,7 @@ def main():
     ##### 2 - DEFINE NETWORK #####
     ##############################
 
-    rate = 0.25
+
 
 
     def evaluate(network):
@@ -59,11 +59,12 @@ def main():
         return ((loss[0]+loss[1]+loss[2])/3)
 
     def first_network():
+        rate = 0.25
+
         network = keras.models.Sequential()
         # Layers
         network.add( Dense(700, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
         network.add( Dropout(rate) )
-        network.add( Dense(100, input_shape=(3,), activation="relu", kernel_constraint=max_norm(3) ) )
         network.add( Dense(NUM_CLASSES, activation="linear") )
 
         # Define training parameters
@@ -87,6 +88,7 @@ def main():
         ############################
         print("\n====== 4. Test network ======\n")
         score = network.evaluate(x_test, y_test, verbose=0)
+
         print("Test loss    :", score[0])
         print("Test accuracy:", score[1], "%")
 
@@ -99,8 +101,8 @@ def main():
         best_performance = 100.0
         best_network = keras.models.Sequential()
 
-        for neurons in range(12,13):
-            for num_epochs in range (1,5):
+        for neurons in range(8,9):
+            for num_epochs in range (2,3):
             #for dropout_rate in range(0,4):
 
                     #INITAL NETWORK
@@ -136,7 +138,6 @@ def main():
                 if evaluate(network) < best_performance:
                     best_performance = evaluate(network)
                     best_network = network
-                    print("BETTER")
 
                 # print("Best network so far:")
                 # print(best_network.summary())
@@ -148,35 +149,30 @@ def main():
 
         print("Best network is:")
         print(best_network.summary())
-        network_json = network.to_json()
-        with open("network.json", "w") as json_file:
-            json_file.write(network_json)
-        # serialize weights to HDF5
-        network.save_weights("network.h5")
+        network.save("network.h5")
         print("Saved model to disk")
 
     def predict_hidden(dataset):
-        json_file = open('network.json', 'r')
-        loaded_network_json = json_file.read()
-        json_file.close()
-        loaded_network = model_from_json(loaded_network_json)
-        # load weights into new model
-        loaded_network.load_weights("model.h5")
+
+        network = load_model('network.h5')
+
         print("Loaded model from disk")
 
+        print(network.summary())
 
-        dataset = normalize(dataset)
+        data = dataset
+        for entry in dataset:
+            data.append(entry[0:3])
 
-        predictions = loaded_network.predict(dataset)
-        predictions.tolist()
+        input_data = np.array(data)
+        predictions = network.predict(input_data)
 
-        score = loaded_network.evaluate(x_test, y_test, verbose=0)
-        print("Test loss    :", score[0])
-        print("Test accuracy:", score[1], "%")
+        return predictions
 
 
     #first_network()
     hyperparameter()
+    #predict_hidden(dataset)
 
 
     #######################################################################
