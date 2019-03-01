@@ -6,13 +6,13 @@ from keras.models import Sequential, load_model
 from keras.layers import Input, Dense, Dropout, Flatten
 from sklearn.model_selection import train_test_split
 
-curDir = os.getcwd()
-temp = curDir.split("/")
-temp = temp[:len(temp)-1]
-parentDir = "/".join(temp)
-sys.path.append(parentDir)
+# curDir = os.getcwd()
+# temp = curDir.split("/")
+# temp = temp[:len(temp)-1]
+# parentDir = "/".join(temp)
+# sys.path.append(parentDir)
 
-from illustrate import illustrate_results_ROI
+# from illustrate import illustrate_results_ROI
 
 
 NUM_CLASSES = 4
@@ -34,7 +34,7 @@ def main():
 
     print("\n====== 2. Initialize network ======\n")
 
-    network = init_network( hiddenNeurons = 100,
+    network = init_network( hiddenNeurons = 150,
                             hiddenActivation = "relu",
                             dropout = 0.25,
                             optimizer = "adam",
@@ -59,7 +59,8 @@ def main():
     print("\n====== 4. Test network ======\n")
     evaluate_network(network, x_test, y_test)
 
-
+    # network.save('best_model.h5')
+    # print("\nNetwork saved to file!")
 
 ##############################################################
 
@@ -141,11 +142,29 @@ def evaluate_network(network, x_test, y_test, verbose=0):
 
 
 
-def predict_hidden(dataset): # --> TODO: implement
+def predict_hidden(dataset):
     # Preprocess dataset
+    np.random.shuffle(dataset)
+    data = []
+    labels = []
+    for entry in dataset:
+        data.append(entry[0:3])
+        labels.append(entry[3:7])
+    input_data = np.array(data)
+
     # Load best neural network
     network = load_model('best_model.h5')
-    # Return predictions on dataset
+    # Get predictions on dataset
+    predictions = network.predict(input_data)
+    # Turn predictions into a list of 1-hot encoded arrays
+    for i in range(len(predictions)):
+        maxVal = max(predictions[i])
+        for j in range(len(predictions[i])):
+            if (predictions[i][j] < maxVal):
+                predictions[i][j] = 0
+            else:
+                predictions[i][j] = 1
+    return predictions
 
 
 if __name__ == "__main__":
